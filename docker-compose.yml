@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: craftco
+      POSTGRES_PASSWORD: craftco
+      POSTGRES_DB: craftco
+    ports:
+      - "5433:5432"
+    volumes:
+      - craftco_pg:/var/lib/postgresql/data
+
+volumes:
+  craftco_pg:

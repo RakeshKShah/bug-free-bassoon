@@ -1,0 +1,88 @@
+# Node.js
+node_modules/
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+npm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.env
+.env.*
+.vscode/
+.DS_Store
+npm-debug.log*
+coverage/
+
+# Vite / React
+/dist/
+/build/
+.local/
+*.local
+*.cache
+*.tsbuildinfo
+
+# Tailwind CSS
+tailwind.config.js
+postcss.config.js
+
+# Prisma
+/prisma/dev.db
+**/schema.prisma.lock
+*.db
+*.sqlite
+
+# PostgreSQL
+*.psql
+*.sql
+pgdata/
+
+# JWT auth
+jwt.secret
+jwt.*
+
+# Stripe
+stripe/*
+.env.stripe
+
+# Resend / email
+.env.resend
+
+# Background jobs
+cron
+
+# Misc
+*.log
+logs/
+*.tgz
+.idea/
+*.swp
+
+# Generated files
+/dist
+/build
+
+# MacOS
+.DS_Store
+
+# Editor directories and files
+*.sublime-workspace
+*.sublime-project
+.vscode/
+*.code-workspace
+
+# Optional npm cache directory
+.npm/
+
+# Misc temp
+tmp/
+temp/
+dist-lambda/
+
+# CodeValid — auto-added
+.next/
+out/
+.turbo/
+__pycache__/
+.pytest_cache/
+.venv/

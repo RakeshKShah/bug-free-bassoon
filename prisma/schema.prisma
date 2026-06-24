@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum ProductStatus {
+  ACTIVE
+  SOLD_OUT
+  REMOVED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         Role
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  sellerProfile SellerProfile?
+  orders        Order[]
+  reviews       Review[]
+
+  @@map("users")
+}
+
+model SellerProfile {
+  id              String @id @default(cuid())
+  userId          String @unique @map("user_id")
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeName       String @map("store_name")
+  bio             String @default("")
+
+  products Product[]
+  payouts  Payout[]
+
+  @@map("seller_profiles")
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  sellerId    String        @map("seller_id")
+  seller      SellerProfile @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  category    String
+  priceCents  Int           @map("price_cents")
+  stockQty    Int           @default(0) @map("stock_qty")
+  photos      Json          @default("[]")
+  status      ProductStatus @default(ACTIVE)
+  visible     Boolean       @default(true)
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@map("products")
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  buyerId               String      @map("buyer_id")
+  buyer                 User        @relation(fields: [buyerId], references: [id])
+  status                OrderStatus @default(PENDING)
+  totalCents            Int         @default(0) @map("total_cents")
+  platformFeeCents      Int         @default(0) @map("platform_fee_cents")
+  createdAt             DateTime    @default(now()) @map("created_at")
+
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id               String  @id @default(cuid())
+  orderId          String  @map("order_id")
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String  @map("product_id")
+  product          Product @relation(fields: [productId], references: [id])
+  sellerId         String  @map("seller_id")
+  qty              Int
+  priceAtPurchase  Int     @map("price_at_purchase")
+  sellerPayoutCents Int    @default(0) @map("seller_payout_cents")
+  payoutId         String? @map("payout_id")
+  payout           Payout? @relation(fields: [payoutId], references: [id])
+
+  review Review?
+
+  @@map("order_items")
+}
+
+model Review {
+  id          String    @id @default(cuid())
+  orderItemId String    @unique @map("order_item_id")
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  productId   String    @map("product_id")
+  product     Product   @relation(fields: [productId], references: [id])
+  buyerId     String    @map("buyer_id")
+  buyer       User      @relation(fields: [buyerId], references: [id])
+  rating      Int
+  body        String
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("reviews")
+}
+
+model Payout {
+  id               String       @id @default(cuid())
+  sellerId         String       @map("seller_id")
+  seller           SellerProfile @relation(fields: [sellerId], references: [id])
+  amountCents      Int          @map("amount_cents")
+  periodStart      DateTime     @map("period_start")
+  periodEnd        DateTime     @map("period_end")
+  status           PayoutStatus @default(PENDING)
+  createdAt        DateTime     @default(now()) @map("created_at")
+
+  orderItems OrderItem[]
+
+  @@map("payouts")
+}
