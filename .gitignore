@@ -34,7 +34,8 @@ postcss.config.js
 
 # PostgreSQL
 *.psql
-*.sql
+# *.sql  -- commented out: prisma/migrations/**/*.sql required for CodeValid migrate deploy + git commit
+!prisma/migrations/**/*.sql
 pgdata/
 
 # JWT auth
@@ -86,3 +87,13 @@ out/
 __pycache__/
 .pytest_cache/
 .venv/
+
+# CodeValid — auto-added
+.codevalid/ui/Dockerfile
+.codevalid/ui/playwright.config.js
+.codevalid/ui/helper/
+.codevalid/ui/helpers/
+test_learnings.txt
+.codevalid/test_learnings.txt
+onboarding_learning.txt
+.codevalid/onboarding_learning.txt
